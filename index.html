@@ -1,0 +1,287 @@
+
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PROTOCOL: RESTORE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              mono: ['"VT323"', 'monospace'], // Terminal text
+              sans: ['"Silkscreen"', 'cursive'], // UI Headers
+            },
+            colors: {
+              cyber: {
+                bg: '#020408', // Darker background
+                panel: '#0f1929',
+                primary: '#00f2ff', // Cyan
+                primaryDim: 'rgba(0, 242, 255, 0.1)',
+                accent: '#9d00ff',  // Purple
+                success: '#00ff9d',
+                alert: '#ff0055',
+                text: '#e0fbfc',
+              }
+            },
+            animation: {
+              'spin-slow': 'spin 20s linear infinite',
+              'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'glitch': 'glitch 2s linear infinite',
+              'data-stream': 'dataStream 2s linear infinite',
+              'breathe': 'breathe 3s ease-in-out infinite',
+              'particle': 'particle 0.8s ease-out forwards',
+              'snow': 'fall linear infinite',
+              'matrix': 'matrix linear infinite',
+              'scan-horizontal': 'scanHorizontal 2s linear infinite',
+              'radar-ping': 'radarPing 3s ease-out infinite',
+              'orbit': 'orbit 10s linear infinite',
+              'border-flow': 'borderFlow 2s linear infinite',
+              'float': 'float 6s ease-in-out infinite',
+              'warp': 'warp 0.5s linear infinite',
+            },
+            keyframes: {
+              glitch: {
+                '2%, 64%': { transform: 'translate(1px,0) skew(0deg)' },
+                '4%, 60%': { transform: 'translate(-1px,0) skew(0deg)' },
+                '62%': { transform: 'translate(0,0) skew(2deg)' },
+              },
+              dataStream: {
+                '0%': { transform: 'translateY(-100%)', opacity: '0' },
+                '50%': { opacity: '1' },
+                '100%': { transform: 'translateY(100%)', opacity: '0' }
+              },
+              breathe: {
+                '0%, 100%': { boxShadow: '0 0 0 2px rgba(0, 242, 255, 0.2)' },
+                '50%': { boxShadow: '0 0 0 6px rgba(0, 242, 255, 0.1)' }
+              },
+              particle: {
+                '0%': { transform: 'translate(0, 0) scale(1)', opacity: '1' },
+                '100%': { transform: 'translate(var(--tx), var(--ty)) scale(0)', opacity: '0' }
+              },
+              fall: {
+                '0%': { transform: 'translateY(-10vh) translateX(0)', opacity: '0' },
+                '10%': { opacity: '1' },
+                '100%': { transform: 'translateY(110vh) translateX(20px)', opacity: '0' }
+              },
+              matrix: {
+                '0%': { transform: 'translateY(-100%)', opacity: '0' },
+                '20%': { opacity: '1' },
+                '100%': { transform: 'translateY(100%)', opacity: '0' }
+              },
+              scanHorizontal: {
+                '0%': { transform: 'translateX(-100%)', opacity: '0' },
+                '50%': { opacity: '1' },
+                '100%': { transform: 'translateX(100%)', opacity: '0' }
+              },
+              radarPing: {
+                '0%': { transform: 'scale(0)', opacity: '1', borderWidth: '2px' },
+                '100%': { transform: 'scale(2)', opacity: '0', borderWidth: '0px' }
+              },
+              orbit: {
+                '0%': { transform: 'rotate(0deg) scale(1)' },
+                '50%': { transform: 'rotate(180deg) scale(1.2)' },
+                '100%': { transform: 'rotate(360deg) scale(1)' }
+              },
+              borderFlow: {
+                '0%': { backgroundPosition: '0% 50%' },
+                '100%': { backgroundPosition: '100% 50%' }
+              },
+              float: {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-20px)' }
+              },
+              warp: {
+                '0%': { transform: 'translateX(100vw) scaleX(5)', opacity: '0' },
+                '20%': { opacity: '1' },
+                '100%': { transform: 'translateX(-100vw) scaleX(5)', opacity: '0' }
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body {
+        background-color: #020408; /* Darker Space Black */
+        color: #e0fbfc;
+        font-family: 'VT323', monospace; /* Enforce pixel font globally */
+        /* Force pixelated text rendering - optimized */
+        -webkit-font-smoothing: none; 
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeSpeed;
+        image-rendering: pixelated;
+        overflow-x: hidden;
+        word-break: break-word; /* Fix text cutting */
+      }
+      
+      h1, h2, h3, h4, h5, h6, button, .font-sans {
+        font-family: 'Silkscreen', cursive;
+      }
+
+      /* CRT Scanline Effect - Refined */
+      .scanlines {
+        background: linear-gradient(
+          to bottom,
+          rgba(18, 16, 16, 0) 50%,
+          rgba(0, 0, 0, 0.25) 50%,
+          rgba(0, 0, 0, 0.6)
+        );
+        background-size: 100% 4px;
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        pointer-events: none;
+        z-index: 9999; /* Ensure scanlines are always on top */
+        opacity: 0.10;
+      }
+
+      /* Dithering Pattern (Checkerboard) - Refined */
+      .bg-dither {
+        background-image: 
+          linear-gradient(45deg, rgba(0,0,0,0.1) 25%, transparent 25%), 
+          linear-gradient(-45deg, rgba(0,0,0,0.1) 25%, transparent 25%), 
+          linear-gradient(45deg, transparent 75%, rgba(0,0,0,0.1) 75%), 
+          linear-gradient(-45deg, transparent 75%, rgba(0,0,0,0.1) 75%);
+        background-size: 4px 4px;
+        background-position: 0 0, 0 2px, 2px -2px, -2px 0px;
+      }
+
+      /* Neon Glow Text */
+      .text-glow {
+        text-shadow: 0 0 5px rgba(0, 242, 255, 0.7), 0 0 10px rgba(0, 242, 255, 0.5);
+      }
+      .text-glow-accent {
+        text-shadow: 0 0 5px rgba(157, 0, 255, 0.7), 0 0 10px rgba(157, 0, 255, 0.5);
+      }
+
+      /* Custom Scrollbar - Blocky */
+      ::-webkit-scrollbar {
+        width: 14px;
+        background: #050b14;
+      }
+      ::-webkit-scrollbar-track {
+        background: #0f1929; 
+        border-left: 2px solid #334155;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #00f2ff; 
+        border: 2px solid #050b14;
+        box-shadow: inset -2px -2px 0px rgba(0,0,0,0.5);
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #9d00ff; 
+      }
+      
+      /* Utilities */
+      .clip-corner {
+          clip-path: polygon(
+            0 0,
+            100% 0,
+            100% calc(100% - 10px),
+            calc(100% - 10px) 100%,
+            0 100%
+          );
+      }
+
+      /* Glitch Effect CSS */
+      .glitch-text {
+        position: relative;
+        display: inline-block;
+      }
+      
+      .glitch-text::before,
+      .glitch-text::after {
+        content: attr(data-text);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #000; /* Dark bg */
+        overflow: hidden;
+      }
+
+      .glitch-text::before {
+        left: 1px;
+        text-shadow: -1px 0 #ff00c1;
+        clip: rect(44px, 450px, 56px, 0);
+        animation: glitch-anim 2.5s infinite linear alternate-reverse;
+      }
+
+      .glitch-text::after {
+        left: -1px;
+        text-shadow: -1px 0 #00fff9;
+        clip: rect(44px, 450px, 56px, 0);
+        animation: glitch-anim2 3s infinite linear alternate-reverse;
+      }
+
+      @keyframes glitch-anim {
+        0% { clip: rect(11px, 9999px, 86px, 0); transform: skew(0.5deg); }
+        5% { clip: rect(27px, 9999px, 21px, 0); transform: skew(0.5deg); }
+        10% { clip: rect(74px, 9999px, 67px, 0); transform: skew(0.5deg); }
+        15% { clip: rect(10px, 9999px, 89px, 0); transform: skew(0.5deg); }
+        20% { clip: rect(2px, 9999px, 28px, 0); transform: skew(0.5deg); }
+        25% { clip: rect(98px, 9999px, 4px, 0); transform: skew(0.5deg); }
+        30% { clip: rect(45px, 9999px, 66px, 0); transform: skew(0.5deg); }
+        35% { clip: rect(39px, 9999px, 16px, 0); transform: skew(0.5deg); }
+        40% { clip: rect(82px, 9999px, 3px, 0); transform: skew(0.5deg); }
+        45% { clip: rect(54px, 9999px, 97px, 0); transform: skew(0.5deg); }
+        50% { clip: rect(23px, 9999px, 85px, 0); transform: skew(0.5deg); }
+        55% { clip: rect(71px, 9999px, 12px, 0); transform: skew(0.5deg); }
+        60% { clip: rect(4px, 9999px, 63px, 0); transform: skew(0.5deg); }
+        65% { clip: rect(92px, 9999px, 37px, 0); transform: skew(0.5deg); }
+        70% { clip: rect(66px, 9999px, 43px, 0); transform: skew(0.5deg); }
+        75% { clip: rect(5px, 9999px, 52px, 0); transform: skew(0.5deg); }
+        80% { clip: rect(31px, 9999px, 98px, 0); transform: skew(0.5deg); }
+        85% { clip: rect(87px, 9999px, 24px, 0); transform: skew(0.5deg); }
+        90% { clip: rect(18px, 9999px, 76px, 0); transform: skew(0.5deg); }
+        95% { clip: rect(49px, 9999px, 9px, 0); transform: skew(0.5deg); }
+        100% { clip: rect(62px, 9999px, 15px, 0); transform: skew(0.5deg); }
+      }
+
+      @keyframes glitch-anim2 {
+        0% { clip: rect(65px, 9999px, 100px, 0); transform: skew(0.5deg); }
+        5% { clip: rect(52px, 9999px, 74px, 0); transform: skew(0.5deg); }
+        10% { clip: rect(79px, 9999px, 85px, 0); transform: skew(0.5deg); }
+        15% { clip: rect(75px, 9999px, 5px, 0); transform: skew(0.5deg); }
+        20% { clip: rect(67px, 9999px, 61px, 0); transform: skew(0.5deg); }
+        25% { clip: rect(14px, 9999px, 79px, 0); transform: skew(0.5deg); }
+        30% { clip: rect(1px, 9999px, 66px, 0); transform: skew(0.5deg); }
+        35% { clip: rect(86px, 9999px, 30px, 0); transform: skew(0.5deg); }
+        40% { clip: rect(23px, 9999px, 98px, 0); transform: skew(0.5deg); }
+        45% { clip: rect(85px, 9999px, 72px, 0); transform: skew(0.5deg); }
+        50% { clip: rect(71px, 9999px, 75px, 0); transform: skew(0.5deg); }
+        55% { clip: rect(2px, 9999px, 48px, 0); transform: skew(0.5deg); }
+        60% { clip: rect(30px, 9999px, 16px, 0); transform: skew(0.5deg); }
+        65% { clip: rect(59px, 9999px, 50px, 0); transform: skew(0.5deg); }
+        70% { clip: rect(98px, 9999px, 4px, 0); transform: skew(0.5deg); }
+        75% { clip: rect(44px, 9999px, 9px, 0); transform: skew(0.5deg); }
+        80% { clip: rect(53px, 9999px, 37px, 0); transform: skew(0.5deg); }
+        85% { clip: rect(8px, 9999px, 92px, 0); transform: skew(0.5deg); }
+        90% { clip: rect(76px, 9999px, 13px, 0); transform: skew(0.5deg); }
+        95% { clip: rect(32px, 9999px, 57px, 0); transform: skew(0.5deg); }
+        100% { clip: rect(91px, 9999px, 62px, 0); transform: skew(0.5deg); }
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.554.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "jspdf": "https://aistudiocdn.com/jspdf@^3.0.4",
+    "html2canvas": "https://aistudiocdn.com/html2canvas@^1.4.1"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
